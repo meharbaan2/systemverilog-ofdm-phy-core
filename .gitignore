@@ -1,0 +1,9 @@
+obj_dir/
+tools/
+.vs/
+*.exe
+*.msi
+*.zip
+*.tgz
+*.vcd
+*.fst
