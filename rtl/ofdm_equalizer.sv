@@ -22,10 +22,9 @@ module ofdm_equalizer (
                 denom = q_add(h_power, noise_var);
             end
 
-            inv_denom = q_recip(denom);
+            inv_denom = q_recip_approx(denom);
             numerator = c_mul(rx_frame[k], c_conj(h_est[k]));
             eq_frame[k] = c_scale_q(numerator, inv_denom);
         end
     end
 endmodule
-

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="210" viewBox="0 0 980 210" role="img" aria-label="OFDM pilot grid diagram">
+  <rect width="980" height="210" fill="#f8fafc"/>
+  <style>
+    .title{font:700 22px Arial,sans-serif;fill:#0f172a}
+    .small{font:13px Arial,sans-serif;fill:#334155}
+    .tone{stroke:#cbd5e1;fill:#fff}
+    .pilotp{fill:#bfdbfe;stroke:#2563eb}
+    .pilotn{fill:#bbf7d0;stroke:#059669}
+    .data{fill:#f8fafc;stroke:#94a3b8}
+  </style>
+  <text x="30" y="34" class="title">Pilot Grid: 64 Tones, Spacing 8</text>
+  <text x="30" y="58" class="small">Pilots occupy tones 0, 8, 16, ... 56 with alternating +1 and -1 polarity; the remaining 56 tones carry QAM data.</text>
+  <g transform="translate(32,86)">
+    <rect x="0" y="0" width="12" height="52" class="pilotp"/><text x="1" y="71" class="small">0</text>
+    <rect x="14" y="0" width="12" height="52" class="data"/>
+    <rect x="28" y="0" width="12" height="52" class="data"/>
+    <rect x="42" y="0" width="12" height="52" class="data"/>
+    <rect x="56" y="0" width="12" height="52" class="data"/>
+    <rect x="70" y="0" width="12" height="52" class="data"/>
+    <rect x="84" y="0" width="12" height="52" class="data"/>
+    <rect x="98" y="0" width="12" height="52" class="data"/>
+    <rect x="112" y="0" width="12" height="52" class="pilotn"/><text x="106" y="71" class="small">8</text>
+    <rect x="126" y="0" width="12" height="52" class="data"/>
+    <rect x="140" y="0" width="12" height="52" class="data"/>
+    <rect x="154" y="0" width="12" height="52" class="data"/>
+    <rect x="168" y="0" width="12" height="52" class="data"/>
+    <rect x="182" y="0" width="12" height="52" class="data"/>
+    <rect x="196" y="0" width="12" height="52" class="data"/>
+    <rect x="210" y="0" width="12" height="52" class="data"/>
+    <rect x="224" y="0" width="12" height="52" class="pilotp"/><text x="214" y="71" class="small">16</text>
+    <rect x="238" y="0" width="12" height="52" class="data"/>
+    <rect x="252" y="0" width="12" height="52" class="data"/>
+    <rect x="266" y="0" width="12" height="52" class="data"/>
+    <rect x="280" y="0" width="12" height="52" class="data"/>
+    <rect x="294" y="0" width="12" height="52" class="data"/>
+    <rect x="308" y="0" width="12" height="52" class="data"/>
+    <rect x="322" y="0" width="12" height="52" class="data"/>
+    <rect x="336" y="0" width="12" height="52" class="pilotn"/><text x="326" y="71" class="small">24</text>
+    <rect x="350" y="0" width="12" height="52" class="data"/>
+    <rect x="364" y="0" width="12" height="52" class="data"/>
+    <rect x="378" y="0" width="12" height="52" class="data"/>
+    <rect x="392" y="0" width="12" height="52" class="data"/>
+    <rect x="406" y="0" width="12" height="52" class="data"/>
+    <rect x="420" y="0" width="12" height="52" class="data"/>
+    <rect x="434" y="0" width="12" height="52" class="data"/>
+    <rect x="448" y="0" width="12" height="52" class="pilotp"/><text x="438" y="71" class="small">32</text>
+    <rect x="560" y="0" width="12" height="52" class="pilotn"/><text x="550" y="71" class="small">40</text>
+    <rect x="672" y="0" width="12" height="52" class="pilotp"/><text x="662" y="71" class="small">48</text>
+    <rect x="784" y="0" width="12" height="52" class="pilotn"/><text x="774" y="71" class="small">56</text>
+  </g>
+  <rect x="42" y="178" width="18" height="12" class="pilotp"/><text x="68" y="189" class="small">+1 pilot</text>
+  <rect x="148" y="178" width="18" height="12" class="pilotn"/><text x="174" y="189" class="small">-1 pilot</text>
+  <rect x="254" y="178" width="18" height="12" class="data"/><text x="280" y="189" class="small">data tone</text>
+</svg>

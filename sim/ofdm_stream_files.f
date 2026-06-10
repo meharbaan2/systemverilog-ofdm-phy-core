@@ -15,4 +15,5 @@ rtl/ofdm_tx_frame.sv
 rtl/ofdm_rx_frame.sv
 rtl/ofdm_tx_stream.sv
 rtl/ofdm_rx_stream.sv
-tb/ofdm_basic_tb.sv
+tb/ofdm_stream_tb.sv
+

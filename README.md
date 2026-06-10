@@ -1,55 +1,95 @@
 # SystemVerilog OFDM PHY Core
 
-A fixed-point SystemVerilog prototype of an OFDM physical-layer baseband
-datapath. The project implements the main transmit/receive processing blocks as
-synthesizable RTL and includes a Verilator sanity testbench.
+A fixed-point SystemVerilog OFDM physical-layer baseband core. The design
+implements a compact OFDM transmit/receive datapath with frame-level modules,
+valid/ready stream wrappers, deterministic regression tests, and open-source
+FPGA synthesis scripts.
 
-## Overview
+**Current status:** Verilator regression passing on Ubuntu WSL with OSS CAD
+Suite / Verilator 5.049.
 
-The design models a small OFDM PHY configuration:
+![OFDM TX/RX block diagram](docs/assets/tx_rx_block_diagram.svg)
 
-- 64 subcarriers
-- 16-sample cyclic prefix
-- Comb pilots every 8 subcarriers
-- QPSK, 16-QAM, and 64-QAM symbol mapping
-- Pilot-aided LS channel estimation
-- ZF/MMSE-style frequency-domain equalization
+## Highlights
 
-The channel models and BER/SNR sweeps are intentionally kept outside the RTL.
-This repository focuses on the hardware datapath blocks and their basic
-verification.
+- 64-subcarrier OFDM with 16-sample cyclic prefix
+- 56 data tones and comb pilots every 8 subcarriers
+- QPSK, 16-QAM, and 64-QAM mapper/demapper
+- 64-point radix-2 FFT/IFFT in portable SystemVerilog
+- Pilot-aided LS channel estimation with interpolation
+- ZF/MMSE-style equalization using a division-free reciprocal approximation
+- Frame-level TX/RX wrappers and fixed-length valid/ready stream wrappers
+- Verilator regressions with randomized modulation, OFDM frame, AWGN, Rayleigh,
+  reciprocal, and handshake tests
+- iCE40UP5K synthesis script and generated report location
 
-## Features
+## Verification Status
 
-- Fixed-point complex arithmetic package
-- QAM mapper and hard-decision demapper
-- Pilot insertion and extraction
-- Cyclic prefix insertion and removal
-- 64-point radix-2 FFT/IFFT
-- LS channel estimator with linear interpolation
-- Frequency-domain equalizer
-- BER counter
-- Frame-level OFDM TX/RX wrappers
-- Verilator-based sanity testbench
-- Deterministic reference-vector generator
+Latest local regression result:
+
+```text
+basic      PASS
+streaming  PASS
+scoreboard PASS
+Result: PASS
+```
+
+Tested flow:
+
+- Windows PowerShell launcher: `run.ps1` / `run.bat`
+- Ubuntu WSL execution path
+- OSS CAD Suite Verilator 5.049
+- Three SystemVerilog testbenches: basic PHY sanity, streaming valid/ready, and
+  Python-scoreboard regression
+
+## Architecture
+
+The core is intentionally small and inspectable: fixed defaults, no packet
+framing, and no timing/CFO recovery. Frame boundaries are implied by fixed
+lengths in v1.
+
+| Parameter | Value |
+| --- | ---: |
+| Subcarriers | 64 |
+| Cyclic prefix | 16 samples |
+| Frame output length | 80 complex samples |
+| Pilot spacing | 8 tones |
+| Data symbols/frame | 56 |
+| Fixed-point lane | signed 24-bit, 16 fractional bits |
+
+![Pilot grid](docs/assets/pilot_grid.svg)
+
+![Fixed-point format](docs/assets/fixed_point.svg)
+
+## Streaming Interfaces
+
+`ofdm_tx_stream` accepts 56 complex QAM symbols and outputs 80 time-domain CP
+samples:
+
+```systemverilog
+input  logic clk, rst_n;
+input  logic in_valid;
+output logic in_ready;
+input  q_t   in_data_i, in_data_q;
+output logic out_valid;
+input  logic out_ready;
+output q_t   out_data_i, out_data_q;
+```
+
+`ofdm_rx_stream` accepts 80 CP samples and outputs 56 equalized data symbols.
+It also exposes `eq_mode` and `noise_var` for ZF/MMSE behavior.
 
 ## Repository Layout
 
 ```text
-rtl/      Synthesizable SystemVerilog modules
-tb/       SystemVerilog testbench
-sim/      Verilator scripts, file list, vector generator
-docs/     Architecture and project notes
-vectors/  Generated fixed-point reference vectors
+rtl/       Synthesizable SystemVerilog modules
+tb/        SystemVerilog regression testbenches
+sim/       Verilator runners and Python scoreboard vector generator
+synth/     Yosys/nextpnr synthesis scripts
+reports/   Synthesis report output
+docs/      Architecture notes and public assets
+vectors/   Deterministic generated reference vectors
 ```
-
-## Requirements
-
-- SystemVerilog simulator with good SystemVerilog support
-- Verilator is the tested simulator
-- Linux or WSL is recommended
-- OSS CAD Suite is a convenient way to get Verilator and related open-source EDA
-  tools
 
 ## One-Click Run
 
@@ -59,100 +99,75 @@ On Windows, double-click:
 run.bat
 ```
 
-This opens a console, runs the Verilator sanity test through Ubuntu WSL, prints
-the regression details, and keeps the window open.
+The script runs the Verilator regression through WSL. If your WSL distribution
+is not named `Ubuntu`, set `OFDM_WSL_DISTRO` before running, or let the wrapper
+fall back to your default WSL distribution.
 
-Expected result:
+Expected summary:
 
 ```text
-========================================
- SystemVerilog OFDM PHY Core Regression
-========================================
-...
-[ OK ] OFDM basic RTL sanity tests passed
+Regression summary:
+  basic      PASS
+  streaming  PASS
+  scoreboard PASS
 Result: PASS
 ```
 
-## Run The Testbench
-
-Install or extract OSS CAD Suite so that Verilator is available at:
-
-```text
-tools/oss-cad-suite/bin/verilator
-```
-
-From Linux or WSL:
+From Linux/WSL:
 
 ```sh
 sh sim/run_verilator.sh
 ```
 
-From PowerShell on Windows:
+![Simulation pass summary](docs/assets/simulation_pass.svg)
 
-```powershell
-.\run.ps1
-```
+## Verification
 
-Or call the WSL runner directly:
-
-```powershell
-.\sim\run_verilator_wsl.ps1
-```
-
-Manual command:
-
-```sh
-tools/oss-cad-suite/bin/verilator -sv --binary --timing \
-  -f sim/ofdm_files.f \
-  --top-module ofdm_basic_tb \
-  --Wno-TIMESCALEMOD --Wno-WIDTHEXPAND --Wno-WIDTHTRUNC
-
-./obj_dir/Vofdm_basic_tb
-```
-
-## Reference Vectors
-
-Generate deterministic reference vectors:
-
-```sh
-python3 sim/generate_vectors.py --seed 7 --out vectors
-```
-
-## Verification Coverage
-
-The current sanity testbench checks:
+The regression suite covers:
 
 - QPSK, 16-QAM, and 64-QAM mapper/demapper identity
-- Pilot polarity and pilot/data placement
-- Cyclic prefix insertion/removal
-- FFT/IFFT round trip within fixed-point tolerance
-- Ideal-channel frame-level OFDM TX/RX recovery
+- Randomized modulation cases generated by Python
+- Pilot placement and alternating pilot polarity
+- CP insertion/removal
+- FFT/IFFT fixed-point round trip
+- Ideal-channel TX/RX recovery
+- Random OFDM frame scoreboard comparison
+- High-SNR AWGN behavioral vector
+- Rayleigh behavioral smoke vector with bounded outputs
+- Reciprocal/equalizer approximation tolerance checks
+- Stream valid/ready input stalls and output backpressure
+- Multiple consecutive stream frames through the same DUT instances
 
-## Design Notes
+Reference vectors are regenerated automatically by `sim/run_verilator.sh` using:
 
-The first implementation is frame-oriented rather than a deeply pipelined
-streaming design. This keeps the datapath easy to inspect while preserving
-synthesizable arithmetic and clean module boundaries.
+```sh
+python3 sim/generate_scoreboard_vectors.py --seed 23 --out vectors
+```
 
-The equalizer currently uses integer division for clarity. A production FPGA
-implementation would usually replace this with a pipelined reciprocal unit,
-lookup table, or Newton-Raphson approximation.
+## Synthesis
 
-See [docs/architecture.md](docs/architecture.md) for more detail.
+The synthesis target is Lattice iCE40UP5K SG48 through OSS CAD Suite:
 
-## Limitations
+```sh
+sh synth/run_synth.sh
+```
 
-- Fixed `N=64`, `CP=16`, and pilot spacing `8`
-- No packet framing, coding, interleaving, CFO correction, or timing recovery
-- No streaming valid/ready interface yet
-- AWGN and Rayleigh fading are verification-side concerns, not RTL blocks
-- Testbench is a focused sanity suite, not exhaustive constrained-random
-  verification
+The script writes `reports/synthesis_report.md` plus Yosys/nextpnr logs and
+netlists. DSP/BRAM reporting on iCE40 is target-specific, so treat the report as
+an open-source FPGA estimate rather than a vendor timing signoff.
 
-## Roadmap
+Current report location: [reports/synthesis_report.md](reports/synthesis_report.md)
 
-- Add streaming valid/ready interfaces
-- Replace integer division with a pipelined reciprocal/equalizer datapath
-- Add more fixed-point golden-vector comparisons
-- Add AWGN/Rayleigh behavioral testbench scenarios
-- Add synthesis reports for a target FPGA
+## Visuals
+
+![Sample OFDM waveform](docs/assets/sample_waveform.svg)
+
+## Scope
+
+This is a synthesizable RTL prototype for the OFDM baseband datapath. AWGN,
+Rayleigh fading, BER/SNR sweeps, CSV export, plotting, and random traffic
+generation stay in software/testbench code because they are verification and
+analysis infrastructure.
+
+Not included in v1: packet framing, FEC, interleaving, synchronization, CFO
+correction, timing recovery, AXI-Stream metadata, or a vendor-optimized FFT IP.

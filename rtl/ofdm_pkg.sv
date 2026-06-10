@@ -97,18 +97,77 @@ package ofdm_pkg;
         end
     endfunction
 
-    function automatic q_t q_recip(input q_t x);
+    function automatic q_t q_recip_approx(input q_t x);
         longint signed xx;
-        longint signed numer;
+        longint signed xn;
+        longint signed y;
+        longint signed xy;
+        longint signed two_minus_xy;
+        int signed shift;
+        int idx;
+        int n;
         begin
             xx = x;
-            numer = 64'sd1 <<< (2 * QFRAC);
-            if (xx <= 0) begin
-                q_recip = q_t'(Q_MAX_L);
+            if (xx <= Q_EPS) begin
+                q_recip_approx = q_t'(Q_MAX_L);
             end else begin
-                q_recip = q_sat(numer / xx);
+                xn = xx;
+                shift = 0;
+
+                for (n = 0; n < 16; n++) begin
+                    if (xn >= (64'sd1 <<< QFRAC)) begin
+                        xn = xn >>> 1;
+                        shift++;
+                    end
+                end
+
+                for (n = 0; n < 16; n++) begin
+                    if (xn < (64'sd1 <<< (QFRAC - 1))) begin
+                        xn = xn <<< 1;
+                        shift--;
+                    end
+                end
+
+                idx = int'((xn - (64'sd1 <<< (QFRAC - 1))) >>> (QFRAC - 5));
+                if (idx < 0) idx = 0;
+                if (idx > 15) idx = 15;
+
+                unique case (idx)
+                    0: y = 64'sd127100;
+                    1: y = 64'sd119837;
+                    2: y = 64'sd113360;
+                    3: y = 64'sd107546;
+                    4: y = 64'sd102300;
+                    5: y = 64'sd97542;
+                    6: y = 64'sd93207;
+                    7: y = 64'sd89241;
+                    8: y = 64'sd85598;
+                    9: y = 64'sd82241;
+                    10: y = 64'sd79138;
+                    11: y = 64'sd76260;
+                    12: y = 64'sd73584;
+                    13: y = 64'sd71090;
+                    14: y = 64'sd68759;
+                    default: y = 64'sd66576;
+                endcase
+
+                xy = (xn * y) >>> QFRAC;
+                two_minus_xy = (64'sd2 <<< QFRAC) - xy;
+                y = (y * two_minus_xy) >>> QFRAC;
+
+                if (shift > 0) begin
+                    y = y >>> shift;
+                end else if (shift < 0) begin
+                    y = y <<< (-shift);
+                end
+
+                q_recip_approx = q_sat(y);
             end
         end
+    endfunction
+
+    function automatic q_t q_recip(input q_t x);
+        q_recip = q_recip_approx(x);
     endfunction
 
     function automatic cplx_t c_make(input q_t re, input q_t im);
@@ -199,4 +258,3 @@ package ofdm_pkg;
         end
     endfunction
 endpackage
-

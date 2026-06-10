@@ -7,9 +7,9 @@ set EXITCODE=%ERRORLEVEL%
 
 echo.
 if "%EXITCODE%"=="0" (
-    echo Summary: OFDM PHY sanity test PASSED.
+    echo Summary: OFDM PHY regression PASSED.
 ) else (
-    echo Summary: OFDM PHY sanity test FAILED with exit code %EXITCODE%.
+    echo Summary: OFDM PHY regression FAILED with exit code %EXITCODE%.
 )
 echo.
 pause

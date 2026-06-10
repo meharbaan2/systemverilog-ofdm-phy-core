@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="300" viewBox="0 0 980 300" role="img" aria-label="Sample OFDM waveform">
+  <rect width="980" height="300" fill="#f8fafc"/>
+  <style>
+    .title{font:700 22px Arial,sans-serif;fill:#0f172a}
+    .small{font:13px Arial,sans-serif;fill:#334155}
+    .axis{stroke:#64748b;stroke-width:1}
+    .re{fill:none;stroke:#2563eb;stroke-width:3}
+    .im{fill:none;stroke:#059669;stroke-width:3}
+    .cp{fill:#e0f2fe;opacity:.7}
+  </style>
+  <text x="30" y="36" class="title">Generated OFDM CP Waveform Example</text>
+  <text x="30" y="60" class="small">Illustrative fixed-point output shape from an 80-sample frame: 16 CP samples followed by 64 useful samples.</text>
+  <rect x="70" y="86" width="144" height="164" class="cp"/>
+  <line x1="70" y1="168" x2="930" y2="168" class="axis"/>
+  <line x1="70" y1="86" x2="70" y2="250" class="axis"/>
+  <path class="re" d="M70 166 L92 132 L114 150 L136 220 L158 188 L180 112 L202 126 L224 176 L246 214 L268 156 L290 100 L312 134 L334 202 L356 226 L378 170 L400 116 L422 140 L444 198 L466 210 L488 150 L510 112 L532 158 L554 224 L576 188 L598 126 L620 136 L642 196 L664 218 L686 160 L708 106 L730 130 L752 206 L774 232 L796 172 L818 118 L840 144 L862 200 L884 208 L906 148 L928 126"/>
+  <path class="im" d="M70 178 L92 210 L114 184 L136 122 L158 140 L180 214 L202 222 L224 166 L246 118 L268 150 L290 220 L312 202 L334 132 L356 116 L378 174 L400 226 L422 194 L444 126 L466 138 L488 208 L510 218 L532 160 L554 112 L576 154 L598 224 L620 198 L642 128 L664 120 L686 178 L708 226 L730 188 L752 122 L774 142 L796 214 L818 216 L840 158 L862 116 L884 156 L906 220 L928 190"/>
+  <text x="110" y="276" class="small">CP</text>
+  <text x="510" y="276" class="small">64-sample IFFT output</text>
+  <text x="800" y="96" class="small" fill="#2563eb">I</text>
+  <text x="828" y="96" class="small" fill="#059669">Q</text>
+</svg>

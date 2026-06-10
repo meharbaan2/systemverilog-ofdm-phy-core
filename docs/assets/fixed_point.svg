@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="260" viewBox="0 0 980 260" role="img" aria-label="Fixed point format explanation">
+  <rect width="980" height="260" fill="#f8fafc"/>
+  <style>
+    .title{font:700 22px Arial,sans-serif;fill:#0f172a}
+    .label{font:600 15px Arial,sans-serif;fill:#0f172a}
+    .small{font:13px Arial,sans-serif;fill:#334155}
+    .sign{fill:#fecaca;stroke:#dc2626}
+    .int{fill:#fde68a;stroke:#d97706}
+    .frac{fill:#bfdbfe;stroke:#2563eb}
+  </style>
+  <text x="30" y="36" class="title">Fixed-Point Complex Samples</text>
+  <text x="30" y="62" class="small">Each real and imaginary component uses signed Q8.16-style storage in a 24-bit q_t lane.</text>
+  <g transform="translate(48,102)">
+    <rect x="0" y="0" width="38" height="54" class="sign"/><text x="13" y="32" class="label">S</text>
+    <rect x="38" y="0" width="266" height="54" class="int"/><text x="128" y="32" class="label">7 integer bits</text>
+    <rect x="304" y="0" width="608" height="54" class="frac"/><text x="545" y="32" class="label">16 fractional bits</text>
+    <text x="0" y="82" class="small">23</text>
+    <text x="292" y="82" class="small">16</text>
+    <text x="904" y="82" class="small">0</text>
+  </g>
+  <text x="48" y="214" class="small">Arithmetic policy: saturating add/subtract, Q-scaled multiply, explicit FFT scaling, and division-free reciprocal approximation for equalization.</text>
+</svg>

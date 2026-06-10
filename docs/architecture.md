@@ -2,10 +2,11 @@
 
 ## Datapath Model
 
-The first implementation is frame-oriented rather than fully streamed. Each block
-accepts a complete 64-subcarrier OFDM frame, or an 80-sample frame when the
-cyclic prefix is present. This keeps the RTL easy to audit while preserving
-synthesizable arithmetic and module boundaries.
+The core keeps the signal processing blocks frame-oriented and wraps the top
+level with fixed-length valid/ready stream adapters. Each frame block accepts a
+complete 64-subcarrier OFDM frame, or an 80-sample frame when the cyclic prefix
+is present. The stream wrappers buffer one fixed frame and expose backpressure
+without requiring a `last` signal in v1.
 
 The intended signal flow is:
 
@@ -38,6 +39,15 @@ Both forward FFT and inverse FFT use the same final divide-by-8, matching the
 C++ simulator's unitary-style FFT/IFFT scaling. In an IFFT-then-FFT round trip,
 the two `1/8` scales cancel the natural `N=64` transform gain.
 
+## Streaming Top Level
+
+`ofdm_tx_stream` accepts `DATA_PER_FRAME=56` complex QAM symbols through
+`in_valid/in_ready` and emits `FRAME_LEN=80` CP samples through
+`out_valid/out_ready`.
+
+`ofdm_rx_stream` accepts 80 time-domain CP samples and emits 56 equalized data
+symbols. RX also exposes `eq_mode` and `noise_var`.
+
 ## Equalization
 
 The equalizer computes:
@@ -47,13 +57,13 @@ ZF:   Xhat = Y * conj(H) / max(|H|^2, epsilon)
 MMSE: Xhat = Y * conj(H) / (|H|^2 + noise_var)
 ```
 
-The reciprocal is currently implemented with synthesizable integer division.
-That is portable and clear for a first version, but an FPGA implementation may
-replace it with a shared reciprocal pipeline, LUT, or Newton-Raphson unit.
+The equalizer avoids synthesis-time integer division. It computes a reciprocal
+approximation by normalizing the denominator, selecting a small LUT seed, and
+performing one Newton-Raphson refinement. `ofdm_recip_nr_pipe` exposes the same
+approximation as a valid/ready pipeline stage for tone-by-tone streaming work.
 
 ## What Is Not Hardware
 
 AWGN, Rayleigh fading, SNR sweeps, CSV export, plots, and random traffic
 generation should remain in `tb/` or `sim/`. Those belong to verification and
 analysis, not the synthesizable core.
-

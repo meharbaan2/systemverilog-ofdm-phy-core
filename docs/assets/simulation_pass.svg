@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="300" viewBox="0 0 980 300" role="img" aria-label="Simulation pass summary">
+  <rect width="980" height="300" rx="0" fill="#052e16"/>
+  <style>
+    .title{font:700 26px Arial,sans-serif;fill:#dcfce7}
+    .mono{font:15px Consolas,monospace;fill:#bbf7d0}
+    .dim{font:13px Consolas,monospace;fill:#86efac}
+  </style>
+  <text x="40" y="48" class="title">OFDM PHY Regression PASS</text>
+  <text x="48" y="92" class="mono">[ OK ] OFDM basic RTL sanity tests passed</text>
+  <text x="48" y="124" class="mono">[ OK ] OFDM streaming valid/ready regression passed</text>
+  <text x="48" y="156" class="mono">[ OK ] OFDM Python scoreboard regression passed</text>
+  <text x="48" y="206" class="dim">Coverage: QAM, pilots, CP, FFT/IFFT, ideal OFDM, AWGN smoke, Rayleigh smoke, reciprocal tolerance</text>
+  <text x="48" y="238" class="dim">Run: sh sim/run_verilator.sh</text>
+</svg>

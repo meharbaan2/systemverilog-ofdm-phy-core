@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="340" viewBox="0 0 980 340" role="img" aria-label="OFDM TX and RX block diagram">
+  <rect width="980" height="340" fill="#f8fafc"/>
+  <style>
+    .title{font:700 24px Arial,sans-serif;fill:#0f172a}
+    .label{font:600 15px Arial,sans-serif;fill:#0f172a}
+    .small{font:13px Arial,sans-serif;fill:#334155}
+    .box{fill:#ffffff;stroke:#2563eb;stroke-width:2;rx:8}
+    .rx{stroke:#059669}
+    .arrow{stroke:#334155;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <text x="32" y="36" class="title">SystemVerilog OFDM PHY Core</text>
+  <text x="32" y="62" class="small">Fixed frame v1: 64 subcarriers, CP=16, pilots every 8 tones, 56 data symbols</text>
+
+  <text x="32" y="104" class="label">Transmit path</text>
+  <rect x="32" y="122" width="126" height="58" class="box"/>
+  <text x="58" y="147" class="label">QAM data</text>
+  <text x="54" y="166" class="small">valid/ready</text>
+  <rect x="204" y="122" width="126" height="58" class="box"/>
+  <text x="227" y="147" class="label">Pilot grid</text>
+  <text x="223" y="166" class="small">+1 / -1 comb</text>
+  <rect x="376" y="122" width="126" height="58" class="box"/>
+  <text x="413" y="147" class="label">IFFT64</text>
+  <text x="405" y="166" class="small">radix-2</text>
+  <rect x="548" y="122" width="126" height="58" class="box"/>
+  <text x="580" y="147" class="label">Add CP</text>
+  <text x="580" y="166" class="small">80 samples</text>
+  <rect x="720" y="122" width="150" height="58" class="box"/>
+  <text x="755" y="147" class="label">TX stream</text>
+  <text x="743" y="166" class="small">out_valid/out_ready</text>
+  <line x1="158" y1="151" x2="204" y2="151" class="arrow"/>
+  <line x1="330" y1="151" x2="376" y2="151" class="arrow"/>
+  <line x1="502" y1="151" x2="548" y2="151" class="arrow"/>
+  <line x1="674" y1="151" x2="720" y2="151" class="arrow"/>
+
+  <text x="32" y="230" class="label">Receive path</text>
+  <rect x="32" y="248" width="126" height="58" class="box rx"/>
+  <text x="59" y="273" class="label">RX stream</text>
+  <text x="54" y="292" class="small">80 samples</text>
+  <rect x="204" y="248" width="126" height="58" class="box rx"/>
+  <text x="236" y="273" class="label">Drop CP</text>
+  <text x="241" y="292" class="small">64 samples</text>
+  <rect x="376" y="248" width="126" height="58" class="box rx"/>
+  <text x="417" y="273" class="label">FFT64</text>
+  <text x="397" y="292" class="small">frequency tones</text>
+  <rect x="548" y="248" width="126" height="58" class="box rx"/>
+  <text x="566" y="273" class="label">LS channel</text>
+  <text x="571" y="292" class="small">interpolate H</text>
+  <rect x="720" y="248" width="150" height="58" class="box rx"/>
+  <text x="744" y="273" class="label">ZF/MMSE EQ</text>
+  <text x="743" y="292" class="small">reciprocal approx</text>
+  <line x1="158" y1="277" x2="204" y2="277" class="arrow"/>
+  <line x1="330" y1="277" x2="376" y2="277" class="arrow"/>
+  <line x1="502" y1="277" x2="548" y2="277" class="arrow"/>
+  <line x1="674" y1="277" x2="720" y2="277" class="arrow"/>
+</svg>

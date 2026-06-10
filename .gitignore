@@ -7,3 +7,6 @@ tools/
 *.tgz
 *.vcd
 *.fst
+reports/*.log
+reports/*.json
+reports/*.asc

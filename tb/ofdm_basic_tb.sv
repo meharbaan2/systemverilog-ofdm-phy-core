@@ -178,8 +178,8 @@ module ofdm_basic_tb;
             $display("[ OK ] OFDM basic RTL sanity tests passed");
         end else begin
             $display("[FAIL] %0d OFDM basic RTL sanity issue(s)", failures);
+            $fatal(1, "OFDM basic regression failed");
         end
         $finish;
     end
 endmodule
-
